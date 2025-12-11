@@ -6,9 +6,10 @@ import { ChevronDown, ChevronUp, Eye, EyeOff, Trash2, AlertCircle, Pencil, Check
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
-import { ConfirmationDialog } from "@/components/ui/confirmation-dialog"
+// import { ConfirmationDialog } from "@/components/ui/confirmation-dialog"
 import { cn } from "@/lib/utils"
 import type { SectionKey } from "@/types"
+import { ConfirmationDialog } from "./confirmation-dialog"
 
 interface SectionCardProps {
   id: SectionKey
@@ -140,16 +141,6 @@ export function SectionCard({
           {/* Delete button with confirmation */}
           {onDelete && (
             <ConfirmationDialog
-              trigger={
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
-                  aria-label={`Delete ${title}`}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              }
               title={`Delete ${title}?`}
               description={`This will remove the ${title.toLowerCase()} section and clear all its content. This action cannot be undone.`}
               confirmLabel="Delete"
