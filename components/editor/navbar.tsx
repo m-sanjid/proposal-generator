@@ -8,6 +8,8 @@ import { useScroll } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { SidebarTrigger } from '../ui/sidebar'
 import { Separator } from '../ui/separator'
+import { usePathname } from 'next/navigation'
+import { Header } from '../landing/header'
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -20,8 +22,11 @@ export const Navbar = () => {
       setIsScrolled(false)
     }
   })
+  const isHome = usePathname() === '/'
+  return isHome ?
 
-  return (
+    <Header />
+    :
     <header className={cn('sticky top-0 left-0 right-0 z-50 bg-neutral-50 dark:bg-neutral-900 transition-all duration-300 ease-in-out', isScrolled && 'bg-white dark:bg-black border-b')}>
       <nav className='h-16 flex items-center justify-between max-w-7xl mx-auto px-2 md:px-4 w-full'>
         <div className='flex items-center gap-2'>
@@ -36,5 +41,4 @@ export const Navbar = () => {
       </nav>
     </header>
 
-  )
 }

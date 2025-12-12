@@ -4,16 +4,6 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import {
-  Home,
-  LayoutDashboard,
-  FolderOpen,
-  Settings,
-  HelpCircle,
-  LogOut,
-  ChevronUp,
-} from "lucide-react"
-
-import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -31,17 +21,9 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Logo } from "./logo"
 import { Kbd } from "./ui/kbd"
-import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
+import { FolderIcon, GearIcon, HouseIcon, InfoIcon, LayoutIcon, MagnifyingGlassIcon } from "@phosphor-icons/react"
 
 interface AppSidebarProps {
   onNewProposal?: () => void
@@ -49,14 +31,14 @@ interface AppSidebarProps {
 
 // Navigation items
 const navItems = [
-  { href: "/", icon: Home, label: "Home", shortcut: "⌘H" },
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard", shortcut: "⌘D" },
+  { href: "/", icon: HouseIcon, label: "Home", shortcut: "⌘H" },
+  { href: "/dashboard", icon: LayoutIcon, label: "Dashboard", shortcut: "⌘D" },
 ]
 
 const resourceItems = [
-  { href: "/templates", icon: FolderOpen, label: "Templates", badge: "Soon" },
-  { href: "/settings", icon: Settings, label: "Settings", badge: "Soon" },
-  { href: "/help", icon: HelpCircle, label: "Help", badge: "Soon" },
+  { href: "/templates", icon: FolderIcon, label: "Templates", badge: "Soon" },
+  { href: "/settings", icon: GearIcon, label: "Settings", badge: "Soon" },
+  { href: "/help", icon: InfoIcon, label: "Help", badge: "Soon" },
 ]
 
 export function AppSidebar({ onNewProposal }: AppSidebarProps) {
@@ -74,7 +56,7 @@ export function AppSidebar({ onNewProposal }: AppSidebarProps) {
   // Keyboard shortcut for new proposal
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "n") {
+      if ((e.metaKey || e.ctrlKey) && e.key === "h") {
         e.preventDefault()
         handleNewProposal()
       }
@@ -82,20 +64,25 @@ export function AppSidebar({ onNewProposal }: AppSidebarProps) {
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [handleNewProposal])
+
   const { setOpen, isMobile } = useSidebar()
 
   return (
-    <Sidebar collapsible="icon" className="border-r-0 sticky top-0">
+    <Sidebar
+      collapsible="icon"
+      className="border-r-0 sticky top-0 h-screen"
+    >
       {/* Brand Header */}
       <SidebarHeader className="ml-auto">
         <SidebarTrigger size="icon-xl" className="mt-3" />
       </SidebarHeader>
 
-      <SidebarContent className="mt-2 border-t">
+      <SidebarContent className="mt-2 border-t overflow-x-hidden">
         {/* Search */}
         <SidebarGroup>
           <SidebarGroupContent className="relative">
-            <SidebarInput placeholder="Search..." onFocus={() => setOpen(true)} />
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 z-10" />
+            <SidebarInput placeholder="Search..." className="pl-5" onKeyDown={(e) => e.key === "Enter" && setOpen(true)} onFocus={() => setOpen(true)} />
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarSeparator />
@@ -107,12 +94,10 @@ export function AppSidebar({ onNewProposal }: AppSidebarProps) {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={handleNewProposal}
-                  tooltip="New Proposal (⌘N)"
+                  tooltip="New Proposal (⌘H)"
                 >
-                  <span>New Proposal</span>
-                  <Kbd>
-                    ⌘N
-                  </Kbd>
+                  <Kbd>⌘H</Kbd>
+                  <span className="shrink-0">New Proposal</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -130,7 +115,7 @@ export function AppSidebar({ onNewProposal }: AppSidebarProps) {
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.href} className="relative"
                 >
-                  {pathname === item.href && <motion.div layoutId="active-item" className="bg-primary/5 backdrop-blur-3xl inset-0 absolute rounded-md border-primary" />}
+                  {pathname === item.href && <motion.div layoutId="active-item" className="bg-primary/5 backdrop-blur-3xl inset-0 absolute border dark:border-white border-black" />}
 
                   <Link href={item.href}>
                     <SidebarMenuButton
@@ -178,52 +163,17 @@ export function AppSidebar({ onNewProposal }: AppSidebarProps) {
 
       {/* Footer with User */}
       <SidebarFooter className="border-t border-sidebar-border">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-orange-400 to-rose-500 text-sm font-semibold text-white shadow-sm">
-                    U
-                  </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">User</span>
-                    <span className="truncate text-xs text-muted-foreground">Free Plan</span>
-                  </div>
-                  <ChevronUp className="ml-auto h-4 w-4" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-xl"
-                align="start"
-                sideOffset={8}
-              >
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="gap-2">
-                    <Settings className="h-4 w-4" />
-                    <span>Settings</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/" className="gap-2">
-                    <LogOut className="h-4 w-4" />
-                    <span>Back to Site</span>
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <SidebarGroupContent>
+          <SidebarGroupLabel>
+            Developed by
+            <Link href="https://sanjid.in" target="_blank" rel="noopener noreferrer">
+              <span className="font-semibold before:content-[' '] before:mr-1">sanjid</span>
+            </Link>
+          </SidebarGroupLabel>
+        </SidebarGroupContent>
       </SidebarFooter>
 
       <SidebarRail />
-
-      {isMobile}
     </Sidebar>
   )
 }
