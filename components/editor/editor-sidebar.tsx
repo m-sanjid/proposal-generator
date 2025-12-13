@@ -131,7 +131,7 @@ export function EditorSidebar({ className }: { className?: string }) {
   }
 
   return (
-    <div className={cn("flex h-full scrollbar-hide flex-col bg-card no-print border w-full max-w-2xl", className)}>
+    <div className={cn("flex h-full scrollbar-hide flex-col bg-card no-print border w-full max-w-3xl", className)}>
       {/* Tabs Navigation */}
       <Tabs
         value={activeTab}
