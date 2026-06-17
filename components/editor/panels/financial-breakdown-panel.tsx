@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { SectionCard } from "@/components/editor/section-card"
-import { ConfirmationDialog } from "@/components/editor/confirmation-dialog"
-import type { FinancialBreakdownPanelProps } from "./types"
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { SectionCard } from "@/components/editor/section-card";
+import { ConfirmationDialog } from "@/components/editor/confirmation-dialog";
+import type { FinancialBreakdownPanelProps } from "./types";
 
 export function FinancialBreakdownPanel({
   invoiceData,
@@ -21,9 +21,9 @@ export function FinancialBreakdownPanel({
   updateTaxRate,
   updateDiscountAmount,
 }: FinancialBreakdownPanelProps) {
-  const { items, taxRate, discountAmount } = invoiceData
+  const { items, taxRate, discountAmount } = invoiceData;
 
-  const formatCurrency = (amount: number) => `$${amount.toLocaleString()}`
+  const formatCurrency = (amount: number) => `₹${amount.toLocaleString()}`;
 
   return (
     <SectionCard
@@ -62,7 +62,9 @@ export function FinancialBreakdownPanel({
               <div className="grid gap-2">
                 <Input
                   value={item.description}
-                  onChange={(e) => updateItem(item.id, { description: e.target.value })}
+                  onChange={(e) =>
+                    updateItem(item.id, { description: e.target.value })
+                  }
                   placeholder="Description"
                 />
                 <div className="grid grid-cols-2 gap-2">
@@ -73,19 +75,23 @@ export function FinancialBreakdownPanel({
                       min="0"
                       value={item.quantity}
                       onChange={(e) =>
-                        updateItem(item.id, { quantity: Number.parseFloat(e.target.value) || 0 })
+                        updateItem(item.id, {
+                          quantity: Number.parseFloat(e.target.value) || 0,
+                        })
                       }
                     />
                   </div>
                   <div>
-                    <Label className="text-xs">Unit Price ($)</Label>
+                    <Label className="text-xs">Unit Price (₹)</Label>
                     <Input
                       type="number"
                       min="0"
                       step="0.01"
                       value={item.rate}
                       onChange={(e) =>
-                        updateItem(item.id, { rate: Number.parseFloat(e.target.value) || 0 })
+                        updateItem(item.id, {
+                          rate: Number.parseFloat(e.target.value) || 0,
+                        })
                       }
                     />
                   </div>
@@ -111,21 +117,25 @@ export function FinancialBreakdownPanel({
               min="0"
               max="100"
               value={taxRate}
-              onChange={(e) => updateTaxRate(Number.parseFloat(e.target.value) || 0)}
+              onChange={(e) =>
+                updateTaxRate(Number.parseFloat(e.target.value) || 0)
+              }
             />
           </div>
           <div>
-            <Label htmlFor="discount">Discount ($)</Label>
+            <Label htmlFor="discount">Discount (₹)</Label>
             <Input
               id="discount"
               type="number"
               min="0"
               value={discountAmount}
-              onChange={(e) => updateDiscountAmount(Number.parseFloat(e.target.value) || 0)}
+              onChange={(e) =>
+                updateDiscountAmount(Number.parseFloat(e.target.value) || 0)
+              }
             />
           </div>
         </div>
       </div>
     </SectionCard>
-  )
+  );
 }

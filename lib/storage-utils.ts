@@ -70,3 +70,13 @@ export function getAllProposals(): SavedProposal[] {
 export function clearAllProposals(): void {
   localStorage.removeItem(STORAGE_KEY)
 }
+
+export function duplicateProposal(id: string): SavedProposal | null {
+  const original = getProposal(id)
+  if (!original) return null
+
+  return saveProposal({
+    name: `${original.name} (Copy)`,
+    data: { ...original.data },
+  })
+}

@@ -2,6 +2,7 @@
 
 
 import { useInvoice } from "@/context/invoice-context"
+import { RichTextContent } from "@/components/ui/rich-text-content"
 import { cn } from "@/lib/utils"
 
 export function DocumentPreview({ className }: { className?: string }) {
@@ -21,9 +22,9 @@ export function DocumentPreview({ className }: { className?: string }) {
   const { subtotal, taxAmount, grandTotal } = calculations
 
   const formatCurrency = (amount: number) => {
-    return amount.toLocaleString("en-US", {
+    return amount.toLocaleString("en-IN", {
       style: "currency",
-      currency: "USD",
+      currency: "INR",
     })
   }
 
@@ -110,13 +111,19 @@ export function DocumentPreview({ className }: { className?: string }) {
             {executiveSummary.objective && (
               <div className="mb-4">
                 <h3 className="mb-1 text-sm font-semibold text-gray-700">{executiveSummary.objectiveLabel}</h3>
-                <p className="text-sm leading-relaxed text-gray-600">{executiveSummary.objective}</p>
+                <RichTextContent
+                  html={executiveSummary.objective}
+                  className="text-gray-600"
+                />
               </div>
             )}
             {executiveSummary.solution && (
               <div>
                 <h3 className="mb-1 text-sm font-semibold text-gray-700">{executiveSummary.solutionLabel}</h3>
-                <p className="text-sm leading-relaxed text-gray-600">{executiveSummary.solution}</p>
+                <RichTextContent
+                  html={executiveSummary.solution}
+                  className="text-gray-600"
+                />
               </div>
             )}
           </section>
@@ -139,7 +146,10 @@ export function DocumentPreview({ className }: { className?: string }) {
                     style={{ borderColor: branding.themeColor }}
                   >
                     <h3 className="font-semibold text-gray-800">{phase.title}</h3>
-                    <p className="mt-1 text-sm text-gray-600">{phase.description}</p>
+                    <RichTextContent
+                      html={phase.description}
+                      className="mt-1 text-gray-600"
+                    />
                   </div>
                 ))}
               </div>
@@ -278,7 +288,10 @@ export function DocumentPreview({ className }: { className?: string }) {
               </div>
             )}
             {termsConditions.additionalTerms && (
-              <p className="text-xs leading-relaxed text-gray-500">{termsConditions.additionalTerms}</p>
+              <RichTextContent
+                html={termsConditions.additionalTerms}
+                className="text-xs text-gray-500"
+              />
             )}
           </section>
 
@@ -289,11 +302,13 @@ export function DocumentPreview({ className }: { className?: string }) {
               {getSectionLabel("notes")}
             </h2>
             {notes.length === 1 ? (
-              <p className="text-sm text-gray-600">{notes[0].text}</p>
+              <RichTextContent html={notes[0].text} className="text-gray-600" />
             ) : (
               <ul className="list-inside list-disc space-y-1 text-sm text-gray-600">
                 {notes.map((note) => (
-                  <li key={note.id}>{note.text}</li>
+                  <li key={note.id}>
+                    <RichTextContent html={note.text} className="inline text-gray-600" />
+                  </li>
                 ))}
               </ul>
             )}

@@ -1,4 +1,5 @@
 import { Text, View, Image } from "@react-pdf/renderer"
+import { RichTextPdf } from "@/lib/html-to-pdf"
 import { formatDate, formatCurrency } from "./utils"
 import type {
   BasePdfSectionProps,
@@ -82,7 +83,7 @@ export function ExecutiveSummarySection({
           <Text style={[styles.infoLabel, { marginBottom: 4 }]}>
             {objectiveLabel}
           </Text>
-          <Text style={styles.sectionContent}>{objective}</Text>
+          <RichTextPdf content={objective} style={styles.sectionContent} />
         </View>
       )}
 
@@ -91,7 +92,7 @@ export function ExecutiveSummarySection({
           <Text style={[styles.infoLabel, { marginBottom: 4 }]}>
             {solutionLabel}
           </Text>
-          <Text style={styles.sectionContent}>{solution}</Text>
+          <RichTextPdf content={solution} style={styles.sectionContent} />
         </View>
       )}
     </View>
@@ -118,7 +119,7 @@ export function ScopeOfWorkSection({
           {phases.map((phase) => (
             <View key={phase.id} style={styles.phaseItem}>
               <Text style={styles.phaseTitle}>{phase.title}</Text>
-              <Text style={styles.phaseDescription}>{phase.description}</Text>
+              <RichTextPdf content={phase.description} style={styles.phaseDescription} />
             </View>
           ))}
         </View>
@@ -283,9 +284,9 @@ export function TermsConditionsSection({
       ))}
 
       {additionalTerms && (
-        <Text style={[styles.sectionContent, { marginTop: 10 }]}>
-          {additionalTerms}
-        </Text>
+        <View style={{ marginTop: 10 }}>
+          <RichTextPdf content={additionalTerms} style={styles.sectionContent} />
+        </View>
       )}
     </View>
   )
@@ -299,9 +300,12 @@ export function NotesSection({ data, styles, label }: LabeledPdfSectionProps) {
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{label}</Text>
       {data.notes.map((note, index) => (
-        <Text key={note.id} style={styles.noteItem}>
-          {index + 1}. {note.text}
-        </Text>
+        <View key={note.id} style={{ flexDirection: "row", marginBottom: 4 }}>
+          <Text style={styles.noteItem}>{index + 1}. </Text>
+          <View style={{ flex: 1 }}>
+            <RichTextPdf content={note.text} style={styles.noteItem} />
+          </View>
+        </View>
       ))}
     </View>
   )

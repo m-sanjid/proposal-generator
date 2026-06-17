@@ -4,10 +4,9 @@ import { Plus, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { SectionCard } from "@/components/editor/section-card"
 import type { TermsPanelProps } from "./types"
-
-const TEXTAREA_CLASSES = "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
 
 export function TermsPanel({
   invoiceData,
@@ -82,11 +81,9 @@ export function TermsPanel({
         {/* Additional Terms */}
         <div>
           <Label htmlFor="additionalTerms">Additional Terms</Label>
-          <textarea
-            id="additionalTerms"
-            className={TEXTAREA_CLASSES}
+          <RichTextEditor
             value={additionalTerms}
-            onChange={(e) => updateTermsConditions({ additionalTerms: e.target.value })}
+            onChange={(value) => updateTermsConditions({ additionalTerms: value })}
             placeholder="Any additional terms..."
           />
         </div>

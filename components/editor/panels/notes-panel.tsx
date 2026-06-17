@@ -3,10 +3,9 @@
 import { Plus, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { SectionCard } from "@/components/editor/section-card"
 import type { NotesPanelProps } from "./types"
-
-const TEXTAREA_CLASSES = "flex min-h-[60px] flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
 
 export function NotesPanel({
   invoiceData,
@@ -47,11 +46,12 @@ export function NotesPanel({
           {notes.map((note, index) => (
             <div key={note.id} className="flex items-start gap-2">
               <span className="mt-2 text-xs text-muted-foreground">{index + 1}.</span>
-              <textarea
-                className={TEXTAREA_CLASSES}
+              <RichTextEditor
+                className="flex-1"
                 value={note.text}
-                onChange={(e) => updateNote(note.id, e.target.value)}
+                onChange={(text) => updateNote(note.id, text)}
                 placeholder="Add a note..."
+                minHeight="60px"
               />
               <Button
                 variant="ghost"

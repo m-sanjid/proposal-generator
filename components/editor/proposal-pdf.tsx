@@ -1,24 +1,30 @@
-"use client"
+"use client";
 
-import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer"
-import type { InvoiceData } from "@/types"
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  Font,
+} from "@react-pdf/renderer";
+import type { InvoiceData } from "@/types";
+import { RichTextPdf } from "@/lib/html-to-pdf";
 
 // Register fonts (using Helvetica as default, which is built-in)
 Font.register({
   family: "Helvetica",
-  fonts: [
-    { src: "Helvetica" },
-    { src: "Helvetica-Bold", fontWeight: "bold" },
-  ],
-})
+  fonts: [{ src: "Helvetica" }, { src: "Helvetica-Bold", fontWeight: "bold" }],
+});
 
 interface ProposalPDFProps {
-  data: InvoiceData
+  data: InvoiceData;
   calculations: {
-    subtotal: number
-    taxAmount: number
-    grandTotal: number
-  }
+    subtotal: number;
+    taxAmount: number;
+    grandTotal: number;
+  };
 }
 
 // Create styles
@@ -299,35 +305,35 @@ const createStyles = (themeColor: string) =>
       borderTopColor: "#e5e5e5",
       paddingTop: 10,
     },
-  })
+  });
 
 // Helper function to format date
 const formatDate = (dateStr: string): string => {
-  if (!dateStr) return ""
-  const date = new Date(dateStr)
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
   return date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  })
-}
+  });
+};
 
 // Helper function to format currency
 const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
-  }).format(amount)
-}
+    currency: "INR",
+  }).format(amount);
+};
 
 export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
-  const styles = createStyles(data.branding.themeColor || "#2563eb")
+  const styles = createStyles(data.branding.themeColor || "#2563eb");
   const isSectionEnabled = (sectionId: string): boolean => {
-    return data.sections.find((s) => s.id === sectionId)?.enabled ?? false
-  }
+    return data.sections.find((s) => s.id === sectionId)?.enabled ?? false;
+  };
   const getSectionLabel = (sectionId: string): string => {
-    return data.sections.find((s) => s.id === sectionId)?.label ?? ""
-  }
+    return data.sections.find((s) => s.id === sectionId)?.label ?? "";
+  };
 
   return (
     <Document>
@@ -342,8 +348,12 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
           <View style={styles.headerRight}>
             <Text style={styles.documentTitle}>{data.documentTitle}</Text>
             <Text style={styles.documentNumber}>{data.documentNumber}</Text>
-            <Text style={styles.infoText}>Issued: {formatDate(data.issueDate)}</Text>
-            <Text style={styles.infoText}>Valid Until: {formatDate(data.dueDate)}</Text>
+            <Text style={styles.infoText}>
+              Issued: {formatDate(data.issueDate)}
+            </Text>
+            <Text style={styles.infoText}>
+              Valid Until: {formatDate(data.dueDate)}
+            </Text>
           </View>
         </View>
 
@@ -352,16 +362,22 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
           <View style={styles.infoBlock}>
             <Text style={styles.infoLabel}>From</Text>
             <Text style={styles.infoTitle}>{data.sender.name}</Text>
-            {data.sender.taxId && <Text style={styles.infoText}>Tax ID: {data.sender.taxId}</Text>}
+            {data.sender.taxId && (
+              <Text style={styles.infoText}>Tax ID: {data.sender.taxId}</Text>
+            )}
             <Text style={styles.infoText}>{data.sender.address}</Text>
             <Text style={styles.infoText}>{data.sender.email}</Text>
             <Text style={styles.infoText}>{data.sender.phone}</Text>
-            {data.sender.website && <Text style={styles.infoText}>{data.sender.website}</Text>}
+            {data.sender.website && (
+              <Text style={styles.infoText}>{data.sender.website}</Text>
+            )}
           </View>
           <View style={styles.infoBlock}>
             <Text style={styles.infoLabel}>To</Text>
             <Text style={styles.infoTitle}>{data.recipient.name}</Text>
-            {data.recipient.company && <Text style={styles.infoText}>{data.recipient.company}</Text>}
+            {data.recipient.company && (
+              <Text style={styles.infoText}>{data.recipient.company}</Text>
+            )}
             <Text style={styles.infoText}>{data.recipient.address}</Text>
             <Text style={styles.infoText}>{data.recipient.email}</Text>
             <Text style={styles.infoText}>{data.recipient.phone}</Text>
@@ -371,13 +387,18 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
         {/* Executive Summary */}
         {isSectionEnabled("executiveSummary") && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{getSectionLabel("executiveSummary")}</Text>
+            <Text style={styles.sectionTitle}>
+              {getSectionLabel("executiveSummary")}
+            </Text>
             {data.executiveSummary.objective && (
               <View style={{ marginBottom: 10 }}>
                 <Text style={[styles.infoLabel, { marginBottom: 4 }]}>
                   {data.executiveSummary.objectiveLabel}
                 </Text>
-                <Text style={styles.sectionContent}>{data.executiveSummary.objective}</Text>
+                <RichTextPdf
+                  content={data.executiveSummary.objective}
+                  style={styles.sectionContent}
+                />
               </View>
             )}
             {data.executiveSummary.solution && (
@@ -385,7 +406,10 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
                 <Text style={[styles.infoLabel, { marginBottom: 4 }]}>
                   {data.executiveSummary.solutionLabel}
                 </Text>
-                <Text style={styles.sectionContent}>{data.executiveSummary.solution}</Text>
+                <RichTextPdf
+                  content={data.executiveSummary.solution}
+                  style={styles.sectionContent}
+                />
               </View>
             )}
           </View>
@@ -394,20 +418,27 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
         {/* Scope of Work */}
         {isSectionEnabled("scopeOfWork") && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{getSectionLabel("scopeOfWork")}</Text>
+            <Text style={styles.sectionTitle}>
+              {getSectionLabel("scopeOfWork")}
+            </Text>
             {data.scopeOfWork.phases.length > 0 && (
               <View style={{ marginBottom: 15 }}>
                 {data.scopeOfWork.phases.map((phase) => (
                   <View key={phase.id} style={styles.phaseItem}>
                     <Text style={styles.phaseTitle}>{phase.title}</Text>
-                    <Text style={styles.phaseDescription}>{phase.description}</Text>
+                    <RichTextPdf
+                      content={phase.description}
+                      style={styles.phaseDescription}
+                    />
                   </View>
                 ))}
               </View>
             )}
             {data.scopeOfWork.exclusions.length > 0 && (
               <View>
-                <Text style={[styles.infoLabel, { marginBottom: 8 }]}>Exclusions</Text>
+                <Text style={[styles.infoLabel, { marginBottom: 8 }]}>
+                  Exclusions
+                </Text>
                 {data.scopeOfWork.exclusions.map((exc, index) => (
                   <Text key={exc.id} style={styles.exclusionItem}>
                     • {exc.text}
@@ -421,25 +452,35 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
         {/* Timeline */}
         {isSectionEnabled("timeline") && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{getSectionLabel("timeline")}</Text>
+            <Text style={styles.sectionTitle}>
+              {getSectionLabel("timeline")}
+            </Text>
             <View style={styles.timelineInfo}>
               <View>
                 <Text style={styles.timelineLabel}>Start Date</Text>
-                <Text style={styles.timelineValue}>{formatDate(data.timeline.startDate)}</Text>
+                <Text style={styles.timelineValue}>
+                  {formatDate(data.timeline.startDate)}
+                </Text>
               </View>
               <View>
                 <Text style={styles.timelineLabel}>Duration</Text>
-                <Text style={styles.timelineValue}>{data.timeline.estimatedDuration}</Text>
+                <Text style={styles.timelineValue}>
+                  {data.timeline.estimatedDuration}
+                </Text>
               </View>
             </View>
             {data.timeline.milestones.length > 0 && (
               <View>
-                <Text style={[styles.infoLabel, { marginBottom: 8 }]}>Milestones</Text>
+                <Text style={[styles.infoLabel, { marginBottom: 8 }]}>
+                  Milestones
+                </Text>
                 {data.timeline.milestones.map((ms) => (
                   <View key={ms.id} style={styles.milestoneItem}>
                     <View style={styles.milestoneDot} />
                     <Text style={styles.milestoneTitle}>{ms.title}</Text>
-                    <Text style={styles.milestoneDate}>{formatDate(ms.date)}</Text>
+                    <Text style={styles.milestoneDate}>
+                      {formatDate(ms.date)}
+                    </Text>
                   </View>
                 ))}
               </View>
@@ -450,24 +491,41 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
         {/* Financial Breakdown */}
         {isSectionEnabled("financialBreakdown") && data.items.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{getSectionLabel("financialBreakdown")}</Text>
+            <Text style={styles.sectionTitle}>
+              {getSectionLabel("financialBreakdown")}
+            </Text>
             <View style={styles.table}>
               {/* Table Header */}
               <View style={styles.tableHeader}>
-                <Text style={[styles.tableHeaderText, styles.colDescription]}>Description</Text>
+                <Text style={[styles.tableHeaderText, styles.colDescription]}>
+                  Description
+                </Text>
                 <Text style={[styles.tableHeaderText, styles.colQty]}>Qty</Text>
-                <Text style={[styles.tableHeaderText, styles.colRate]}>Rate</Text>
-                <Text style={[styles.tableHeaderText, styles.colAmount]}>Amount</Text>
+                <Text style={[styles.tableHeaderText, styles.colRate]}>
+                  Rate
+                </Text>
+                <Text style={[styles.tableHeaderText, styles.colAmount]}>
+                  Amount
+                </Text>
               </View>
               {/* Table Rows */}
               {data.items.map((item, index) => (
                 <View
                   key={item.id}
-                  style={[styles.tableRow, index % 2 === 1 ? styles.tableRowAlt : {}]}
+                  style={[
+                    styles.tableRow,
+                    index % 2 === 1 ? styles.tableRowAlt : {},
+                  ]}
                 >
-                  <Text style={[styles.tableCell, styles.colDescription]}>{item.description}</Text>
-                  <Text style={[styles.tableCell, styles.colQty]}>{item.quantity}</Text>
-                  <Text style={[styles.tableCell, styles.colRate]}>{formatCurrency(item.rate)}</Text>
+                  <Text style={[styles.tableCell, styles.colDescription]}>
+                    {item.description}
+                  </Text>
+                  <Text style={[styles.tableCell, styles.colQty]}>
+                    {item.quantity}
+                  </Text>
+                  <Text style={[styles.tableCell, styles.colRate]}>
+                    {formatCurrency(item.rate)}
+                  </Text>
                   <Text style={[styles.tableCell, styles.colAmount]}>
                     {formatCurrency(item.quantity * item.rate)}
                   </Text>
@@ -478,23 +536,31 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
             <View style={styles.totalsSection}>
               <View style={styles.totalRow}>
                 <Text style={styles.totalLabel}>Subtotal</Text>
-                <Text style={styles.totalValue}>{formatCurrency(calculations.subtotal)}</Text>
+                <Text style={styles.totalValue}>
+                  {formatCurrency(calculations.subtotal)}
+                </Text>
               </View>
               {data.discountAmount > 0 && (
                 <View style={styles.totalRow}>
                   <Text style={styles.totalLabel}>Discount</Text>
-                  <Text style={styles.totalValue}>-{formatCurrency(data.discountAmount)}</Text>
+                  <Text style={styles.totalValue}>
+                    -{formatCurrency(data.discountAmount)}
+                  </Text>
                 </View>
               )}
               {data.taxRate > 0 && (
                 <View style={styles.totalRow}>
                   <Text style={styles.totalLabel}>Tax ({data.taxRate}%)</Text>
-                  <Text style={styles.totalValue}>{formatCurrency(calculations.taxAmount)}</Text>
+                  <Text style={styles.totalValue}>
+                    {formatCurrency(calculations.taxAmount)}
+                  </Text>
                 </View>
               )}
               <View style={styles.grandTotalRow}>
                 <Text style={styles.grandTotalLabel}>Grand Total</Text>
-                <Text style={styles.grandTotalValue}>{formatCurrency(calculations.grandTotal)}</Text>
+                <Text style={styles.grandTotalValue}>
+                  {formatCurrency(calculations.grandTotal)}
+                </Text>
               </View>
             </View>
           </View>
@@ -503,7 +569,9 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
         {/* Terms & Conditions */}
         {isSectionEnabled("termsConditions") && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{getSectionLabel("termsConditions")}</Text>
+            <Text style={styles.sectionTitle}>
+              {getSectionLabel("termsConditions")}
+            </Text>
             {data.termsConditions.terms.map((term) => (
               <View key={term.id} style={styles.termItem}>
                 <Text style={styles.termLabel}>{term.label}:</Text>
@@ -511,9 +579,12 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
               </View>
             ))}
             {data.termsConditions.additionalTerms && (
-              <Text style={[styles.sectionContent, { marginTop: 10 }]}>
-                {data.termsConditions.additionalTerms}
-              </Text>
+              <View style={{ marginTop: 10 }}>
+                <RichTextPdf
+                  content={data.termsConditions.additionalTerms}
+                  style={styles.sectionContent}
+                />
+              </View>
             )}
           </View>
         )}
@@ -523,31 +594,40 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{getSectionLabel("notes")}</Text>
             {data.notes.map((note, index) => (
-              <Text key={note.id} style={styles.noteItem}>
-                {index + 1}. {note.text}
-              </Text>
+              <View key={note.id} style={{ flexDirection: "row", marginBottom: 4 }}>
+                <Text style={styles.noteItem}>{index + 1}. </Text>
+                <View style={{ flex: 1 }}>
+                  <RichTextPdf content={note.text} style={styles.noteItem} />
+                </View>
+              </View>
             ))}
           </View>
         )}
 
         {/* Acceptance */}
-        {isSectionEnabled("acceptance") && data.acceptance.showSignatureLine && (
-          <View style={styles.signature}>
-            <Text style={styles.sectionTitle}>{getSectionLabel("acceptance")}</Text>
-            <Text style={styles.sectionContent}>
-              By signing below, Client agrees to the terms and conditions outlined in this proposal.
-            </Text>
-            <View style={styles.signatureLine} />
-            <Text style={styles.signatureLabel}>
-              Client Signature {data.acceptance.clientName && `(${data.acceptance.clientName})`}
-            </Text>
-            {data.acceptance.signatureDate && (
-              <Text style={[styles.signatureLabel, { marginTop: 4 }]}>
-                Date: {formatDate(data.acceptance.signatureDate)}
+        {isSectionEnabled("acceptance") &&
+          data.acceptance.showSignatureLine && (
+            <View style={styles.signature}>
+              <Text style={styles.sectionTitle}>
+                {getSectionLabel("acceptance")}
               </Text>
-            )}
-          </View>
-        )}
+              <Text style={styles.sectionContent}>
+                By signing below, Client agrees to the terms and conditions
+                outlined in this proposal.
+              </Text>
+              <View style={styles.signatureLine} />
+              <Text style={styles.signatureLabel}>
+                Client Signature{" "}
+                {data.acceptance.clientName &&
+                  `(${data.acceptance.clientName})`}
+              </Text>
+              {data.acceptance.signatureDate && (
+                <Text style={[styles.signatureLabel, { marginTop: 4 }]}>
+                  Date: {formatDate(data.acceptance.signatureDate)}
+                </Text>
+              )}
+            </View>
+          )}
 
         {/* Footer */}
         <View style={styles.footer} fixed>
@@ -557,5 +637,5 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
         </View>
       </Page>
     </Document>
-  )
+  );
 }

@@ -57,7 +57,7 @@ export function SectionCard({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-lg border bg-card transition-all duration-300",
+        "overflow-hidden rounded-xl border bg-card shadow-xs transition-all duration-300",
         !enabled && "opacity-60",
         isEmpty && enabled && "border-amber-300 dark:border-amber-700",
       )}

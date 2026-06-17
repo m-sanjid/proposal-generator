@@ -30,7 +30,7 @@ export function SettingsPanel({
           />
         </div>
         <div>
-          <Label htmlFor="settingsDiscount">Discount Amount ($)</Label>
+          <Label htmlFor="settingsDiscount">Discount Amount (₹)</Label>
           <Input
             id="settingsDiscount"
             type="number"

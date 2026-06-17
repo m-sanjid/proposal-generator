@@ -60,6 +60,7 @@ const defaultInvoiceData: InvoiceData = {
   discountAmount: 0,
   notes: [{ id: "1", text: "Thank you for considering our services. We look forward to working with you!" }],
   terms: "Payment is due within 30 days of invoice date. Late payments may incur a 2% monthly fee.",
+  logo: "", // Root level logo for proposal thumbnails
   branding: {
     logo: null,
     themeColor: "#2563eb",
@@ -156,6 +157,8 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
     setInvoiceData((prev) => ({
       ...prev,
       branding: { ...prev.branding, ...branding },
+      // Also sync logo to root level for proposal thumbnails (coalesce null to empty string)
+      ...(branding.logo !== undefined && { logo: branding.logo ?? "" }),
     }))
   }
 
@@ -452,6 +455,14 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
     return { subtotal, taxAmount, grandTotal }
   }, [invoiceData.items, invoiceData.taxRate, invoiceData.discountAmount])
 
+  const loadProposal = useCallback((data: InvoiceData) => {
+    setInvoiceData(data)
+  }, [])
+
+  const resetToDefault = useCallback(() => {
+    setInvoiceData(defaultInvoiceData)
+  }, [])
+
   return (
     <InvoiceContext.Provider
       value={{
@@ -491,6 +502,8 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
         isSectionEmpty,
         getSectionLabel,
         calculations,
+        loadProposal,
+        resetToDefault,
       }}
     >
       {children}

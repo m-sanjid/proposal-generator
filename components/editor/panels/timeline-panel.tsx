@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SectionCard } from "@/components/editor/section-card"
 import { ConfirmationDialog } from "@/components/editor/confirmation-dialog"
+import { ProposalDateField } from "@/components/reui/proposal-date-field"
 import type { TimelinePanelProps } from "./types"
 
 export function TimelinePanel({
@@ -34,18 +35,16 @@ export function TimelinePanel({
       onTitleChange={(label) => updateSectionLabel("timeline", label)}
     >
       <div className="space-y-4">
-        {/* Date & Duration */}
-        <div className="grid grid-cols-2 gap-2">
-          <div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-2">
             <Label htmlFor="startDate">Start Date</Label>
-            <Input
-              id="startDate"
-              type="date"
+            <ProposalDateField
               value={startDate}
-              onChange={(e) => updateTimeline({ startDate: e.target.value })}
+              onChange={(value) => updateTimeline({ startDate: value })}
+              placeholder="Select start date"
             />
           </div>
-          <div>
+          <div className="grid gap-2">
             <Label htmlFor="duration">Duration</Label>
             <Input
               id="duration"
@@ -56,7 +55,6 @@ export function TimelinePanel({
           </div>
         </div>
 
-        {/* Milestones */}
         <div className="flex items-center justify-between">
           <Label>Milestones</Label>
           <Button onClick={addMilestone} size="sm" variant="outline">
@@ -69,21 +67,25 @@ export function TimelinePanel({
           {milestones.map((milestone, index) => (
             <div
               key={milestone.id}
-              className="flex items-center gap-2 rounded border bg-muted/30 p-2"
+              className="flex flex-col gap-3 rounded-xl border bg-muted/20 p-3 sm:flex-row sm:items-start"
             >
-              <span className="text-xs text-muted-foreground">{index + 1}.</span>
+              <span className="text-xs font-medium text-muted-foreground sm:mt-2">
+                {index + 1}.
+              </span>
               <Input
                 value={milestone.title}
                 onChange={(e) => updateMilestone(milestone.id, { title: e.target.value })}
                 className="flex-1 text-sm"
                 placeholder="Milestone title"
               />
-              <Input
-                type="date"
-                value={milestone.date}
-                onChange={(e) => updateMilestone(milestone.id, { date: e.target.value })}
-                className="w-32"
-              />
+              <div className="w-full sm:w-44">
+                <ProposalDateField
+                  value={milestone.date}
+                  onChange={(date) => updateMilestone(milestone.id, { date })}
+                  placeholder="Date"
+                  compact
+                />
+              </div>
               <ConfirmationDialog
                 title="Delete Milestone?"
                 description={`This will remove "${milestone.title}" from your timeline.`}

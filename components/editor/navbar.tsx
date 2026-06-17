@@ -9,7 +9,6 @@ import { DownloadMenu } from './download-menu'
 import { cn } from '@/lib/utils'
 import { SidebarTrigger } from '../ui/sidebar'
 import { Separator } from '../ui/separator'
-import { Header } from '../landing/header'
 import { Plus } from 'lucide-react'
 import { TemplatePicker } from '../dashboard/template-picker'
 import { Template } from '@/lib/templates'
@@ -29,7 +28,6 @@ export const Navbar = () => {
     }
   })
 
-  const isHome = pathname === '/'
   const isDashboard = pathname === '/dashboard'
   const isEditor = pathname === '/editor'
 
@@ -37,10 +35,6 @@ export const Navbar = () => {
     sessionStorage.setItem("newProposalTemplate", JSON.stringify(template.data))
     setShowTemplatePicker(false)
     router.push("/editor?new=true")
-  }
-
-  if (isHome) {
-    return <Header />
   }
 
   return (

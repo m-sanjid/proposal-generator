@@ -4,30 +4,32 @@ import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import './globals.css'
 import { ThemeProvider } from 'next-themes'
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { AppSidebar } from '@/components/app-sidebar'
-import { Navbar } from '@/components/editor/navbar'
 import { InvoiceProvider } from '@/context/invoice-context'
-
-
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'ProposalCraft - Professional Proposal Generator',
-  description: 'Create beautiful, professional proposals with real-time preview, customizable templates, and instant PDF export. Perfect for freelancers, agencies, and businesses.',
-  keywords: ['proposal generator', 'invoice creator', 'business proposals', 'PDF export', 'professional templates'],
-  authors: [{ name: 'ProposalCraft' }],
-  creator: 'ProposalCraft',
+  title: 'ProposalFlow - Professional Proposal Generator',
+  description:
+    'Create beautiful, professional proposals with real-time preview, customizable templates, and instant PDF export. Perfect for freelancers, agencies, and businesses.',
+  keywords: [
+    'proposal generator',
+    'business proposals',
+    'PDF export',
+    'professional templates',
+    'SaaS',
+  ],
+  authors: [{ name: 'ProposalFlow' }],
+  creator: 'ProposalFlow',
   openGraph: {
     type: 'website',
-    title: 'ProposalCraft - Professional Proposal Generator',
+    title: 'ProposalFlow - Professional Proposal Generator',
     description: 'Create beautiful, professional proposals in minutes',
-    siteName: 'ProposalCraft',
+    siteName: 'ProposalFlow',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ProposalCraft - Professional Proposal Generator',
+    title: 'ProposalFlow - Professional Proposal Generator',
     description: 'Create beautiful, professional proposals in minutes',
   },
   icons: {
@@ -55,22 +57,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased ${inter.className}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <InvoiceProvider>
-            <SidebarProvider
-              className="relative">
-              <AppSidebar />
-              <SidebarInset>
-                <Navbar />
-                {children}
-              </SidebarInset>
-            </SidebarProvider>
+            {children}
             <Toaster position="top-right" />
             <Analytics />
           </InvoiceProvider>
-
         </ThemeProvider>
       </body>
     </html>

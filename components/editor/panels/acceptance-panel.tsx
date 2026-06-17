@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { SectionCard } from "@/components/editor/section-card"
+import { ProposalDateField } from "@/components/reui/proposal-date-field"
 import type { AcceptancePanelProps } from "./types"
 
 export function AcceptancePanel({
@@ -28,9 +29,8 @@ export function AcceptancePanel({
       onDelete={onClear}
       onTitleChange={(label) => updateSectionLabel("acceptance", label)}
     >
-      <div className="grid gap-3">
-        {/* Show Signature Toggle */}
-        <div className="flex items-center justify-between">
+      <div className="grid gap-4">
+        <div className="flex items-center justify-between rounded-lg border bg-muted/20 px-3 py-2.5">
           <Label htmlFor="showSignature">Show Signature Line</Label>
           <Switch
             id="showSignature"
@@ -39,8 +39,7 @@ export function AcceptancePanel({
           />
         </div>
 
-        {/* Client Name */}
-        <div>
+        <div className="grid gap-2">
           <Label htmlFor="clientSignatureName">Client Name (pre-fill)</Label>
           <Input
             id="clientSignatureName"
@@ -50,14 +49,13 @@ export function AcceptancePanel({
           />
         </div>
 
-        {/* Signature Date */}
-        <div>
+        <div className="grid gap-2">
           <Label htmlFor="signatureDate">Date</Label>
-          <Input
-            id="signatureDate"
-            type="date"
+          <ProposalDateField
             value={signatureDate}
-            onChange={(e) => updateAcceptance({ signatureDate: e.target.value })}
+            onChange={(value) => updateAcceptance({ signatureDate: value })}
+            placeholder="Select signature date"
+            compact
           />
         </div>
       </div>

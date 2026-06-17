@@ -4,11 +4,10 @@ import { Plus, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { SectionCard } from "@/components/editor/section-card"
 import { ConfirmationDialog } from "@/components/editor/confirmation-dialog"
 import type { ScopeOfWorkPanelProps } from "./types"
-
-const TEXTAREA_CLASSES = "flex min-h-[50px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
 
 export function ScopeOfWorkPanel({
   invoiceData,
@@ -68,11 +67,11 @@ export function ScopeOfWorkPanel({
                   placeholder="Phase title"
                   className="text-sm"
                 />
-                <textarea
-                  className={TEXTAREA_CLASSES}
+                <RichTextEditor
                   value={phase.description}
-                  onChange={(e) => updatePhase(phase.id, { description: e.target.value })}
+                  onChange={(description) => updatePhase(phase.id, { description })}
                   placeholder="Description..."
+                  minHeight="50px"
                 />
               </div>
             </div>

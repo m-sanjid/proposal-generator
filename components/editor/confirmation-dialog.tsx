@@ -18,10 +18,8 @@ export const ConfirmationDialog = ({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger>
-        <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-destructive hover:text-destructive">
-          <Trash2 className="h-3 w-3" />
-        </Button>
+      <AlertDialogTrigger className="h-6 w-6 p-0 text-destructive hover:text-destructive">
+        <Trash2 className="h-3 w-3" />
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useCallback } from "react"
-import { Tabs, TabsContent, TabsList, TabsTab } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DownloadMenu } from "@/components/editor/download-menu"
 import { useInvoice } from "@/context/invoice-context"
 
@@ -131,22 +131,23 @@ export function EditorSidebar({ className }: { className?: string }) {
   }
 
   return (
-    <div className={cn("flex h-full scrollbar-hide flex-col bg-card no-print border w-full max-w-3xl", className)}>
-      {/* Tabs Navigation */}
+    <div className={cn("flex h-full w-full max-w-3xl flex-col border bg-card shadow-xs no-print scrollbar-hide", className)}>
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as TabValue)}
         className="flex flex-1 flex-col overflow-hidden"
       >
-        <TabsList className="mx-4 mt-4">
-          {TABS.map((tab) => (
-            <TabsTab key={tab.value} value={tab.value} className="text-xs">
-              {tab.label}
-            </TabsTab>
-          ))}
-        </TabsList>
+        <div className="border-b px-4 pt-4">
+          <TabsList variant="line" className="w-full justify-start">
+            {TABS.map((tab) => (
+              <TabsTrigger key={tab.value} value={tab.value} className="text-xs">
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
 
-        <div className="flex-1 overflow-y-auto scrollbar-hide p-4 border-t">
+        <div className="flex-1 overflow-y-auto scrollbar-hide p-4">
           {/* Details Tab */}
           <TabsContent value="details" className="m-0 space-y-6">
             <DetailsPanel
@@ -253,7 +254,7 @@ export function EditorSidebar({ className }: { className?: string }) {
       </Tabs>
 
       {/* Footer with Download */}
-      <footer className="border-t p-4">
+      <footer className="border-t bg-muted/20 p-4">
         <DownloadMenu />
       </footer>
     </div>

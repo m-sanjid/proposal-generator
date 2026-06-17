@@ -77,9 +77,9 @@ export function AppSidebar({ onNewProposal }: AppSidebarProps) {
         <SidebarTrigger size="icon-xl" className="mt-3" />
       </SidebarHeader>
 
-      <SidebarContent className="mt-2 border-t overflow-x-hidden">
+      <SidebarContent className="mt-2 not-even:overflow-x-hidden">
         {/* Search */}
-        <SidebarGroup>
+        <SidebarGroup className="border-0">
           <SidebarGroupContent className="relative">
             <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 z-10" />
             <SidebarInput placeholder="Search..." className="pl-5" onKeyDown={(e) => e.key === "Enter" && setOpen(true)} onFocus={() => setOpen(true)} />
@@ -88,7 +88,7 @@ export function AppSidebar({ onNewProposal }: AppSidebarProps) {
         <SidebarSeparator />
 
         {/* Quick Action - New Proposal */}
-        <SidebarGroup>
+        <SidebarGroup className="border-0">
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -107,7 +107,7 @@ export function AppSidebar({ onNewProposal }: AppSidebarProps) {
         <SidebarSeparator />
 
         {/* Navigation */}
-        <SidebarGroup>
+        <SidebarGroup className="border-0">
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
 
@@ -135,7 +135,7 @@ export function AppSidebar({ onNewProposal }: AppSidebarProps) {
         <SidebarSeparator />
 
         {/* Resources */}
-        <SidebarGroup>
+        <SidebarGroup className="border-0">
           <SidebarGroupLabel>Resources</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>

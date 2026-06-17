@@ -2,13 +2,13 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { motion } from "motion/react"
-import { Save, Check, ChevronLeft, Download, Eye } from "lucide-react"
-import Link from "next/link"
+import { Save, Check } from "lucide-react"
 
 import { EditorSidebar } from "@/components/editor/editor-sidebar"
 import { DocumentPreview } from "@/components/preview/document-preview"
-import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { useInvoice } from "@/context/invoice-context"
 import { getProposal, saveProposal, updateProposal, SavedProposal } from "@/lib/storage-utils"
 import { SidebarInset } from "@/components/ui/sidebar"
@@ -95,97 +95,83 @@ function EditorContent() {
   }
 
   return (
-    <div className="relative">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-1 flex-col relative">
-        {/* Editor Header with Sidebar Trigger */}
-        <header className="sticky top-16 z-30 flex h-14 shrink-0 items-center gap-2 border-b px-4 backdrop-blur-xl">
-
-          {/* Breadcrumb */}
+    <div className="relative min-h-[calc(100vh-4rem)] bg-muted/30">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-1 flex-col">
+        <header className="sticky top-16 z-30 flex h-14 shrink-0 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur-xl">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden lg:block">
-                <BreadcrumbLink>
-                  <Link href="/dashboard" className="text-xs tracking-tight">Dashboard</Link>
+                <BreadcrumbLink href="/dashboard" className="text-xs">
+                  Dashboard
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden lg:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage className="text-xs tracking-tight">
+                <BreadcrumbPage className="text-xs">
                   {currentProposal ? "Edit Proposal" : "New Proposal"}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          {/* Editor Tabs */}
-          <TabsList>
-            <TabsTab value="form" className="text-xs tracking-tight font-semibold uppercase">
+
+          <TabsList variant="line" className="h-8">
+            <TabsTrigger value="form" className="px-3 text-xs font-medium uppercase">
               Form
-            </TabsTab>
-            <TabsTab value="preview" className="text-xs tracking-tight font-semibold uppercase">
+            </TabsTrigger>
+            <TabsTrigger value="preview" className="px-3 text-xs font-medium uppercase">
               Preview
-            </TabsTab>
+            </TabsTrigger>
             {!isMobile && (
-              <TabsTab value="both" className="text-xs tracking-tight font-semibold uppercase">Both</TabsTab>
+              <TabsTrigger value="both" className="px-3 text-xs font-medium uppercase">
+                Both
+              </TabsTrigger>
             )}
           </TabsList>
-          {/* Spacer */}
+
           <div className="flex-1" />
 
-
-          {/* Proposal Name */}
           <div className="hidden items-center gap-3 sm:flex">
-            <input
-              type="text"
+            <Input
               value={proposalName}
               onChange={(e) => setProposalName(e.target.value)}
               placeholder={invoiceData.documentTitle || "Untitled Proposal"}
-              className="lg:w-48 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-1.5 text-sm font-medium text-neutral-900 placeholder-neutral-400 transition-colors focus:border-neutral-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/5"
+              className="h-8 w-44 bg-muted/40 text-sm lg:w-56"
             />
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2">
-            <motion.button
-              onClick={handleSave}
-              disabled={isSaving}
-              layout
-              className="inline-flex items-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-neutral-800 hover:shadow disabled:opacity-50"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {showSaved ? (
-                <>
-                  <Check className="h-4 w-4" />
-                  <span className="hidden lg:inline">Saved</span>
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4" />
-                  <span className="hidden lg:inline">{isSaving ? "Saving..." : "Save"}</span>
-                </>
-              )}
-            </motion.button>
-          </div>
+          <Button onClick={handleSave} disabled={isSaving} size="sm">
+            {showSaved ? (
+              <>
+                <Check />
+                <span className="hidden lg:inline">Saved</span>
+              </>
+            ) : (
+              <>
+                <Save />
+                <span className="hidden lg:inline">{isSaving ? "Saving..." : "Save"}</span>
+              </>
+            )}
+          </Button>
         </header>
 
         <div className="flex-1 p-4">
-          <TabsPanel value="form">
+          <TabsContent value="form">
             <EditorSidebar className="rounded-2xl" />
-          </TabsPanel>
+          </TabsContent>
           {!isMobile && (
-            <TabsPanel value="both" className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
+            <TabsContent value="both" className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
               <div className="lg:col-span-1">
                 <EditorSidebar className="max-h-[calc(100vh-8rem)] overflow-auto rounded-l-2xl" />
               </div>
               <div className="lg:col-span-2 max-h-[calc(100vh-8rem)] overflow-auto">
                 <DocumentPreview className="rounded-r-2xl" />
               </div>
-            </TabsPanel>
+            </TabsContent>
           )}
 
-          <TabsPanel value="preview">
+          <TabsContent value="preview">
             <DocumentPreview className="rounded-2xl ml-0" />
-          </TabsPanel>
+          </TabsContent>
         </div>
       </Tabs>
     </div>
@@ -197,10 +183,10 @@ function EditorPageInner() {
     <Suspense
       fallback={
         <SidebarInset>
-          <div className="flex min-h-screen items-center justify-center bg-neutral-50">
+          <div className="flex min-h-screen items-center justify-center bg-muted/30">
             <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-neutral-900" />
-              <p className="text-sm text-neutral-500">Loading editor...</p>
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-muted border-t-primary" />
+              <p className="text-sm text-muted-foreground">Loading editor...</p>
             </div>
           </div>
         </SidebarInset>

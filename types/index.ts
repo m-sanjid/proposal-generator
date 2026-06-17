@@ -117,6 +117,7 @@ export interface InvoiceData {
   timeline: Timeline
   termsConditions: TermsConditions
   acceptance: Acceptance
+  logo: string
   sections: SectionConfig[]
 }
 
@@ -163,4 +164,6 @@ export interface InvoiceContextType {
     taxAmount: number
     grandTotal: number
   }
+  loadProposal: (data: InvoiceData) => void
+  resetToDefault: () => void
 }

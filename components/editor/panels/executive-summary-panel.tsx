@@ -1,10 +1,9 @@
 "use client"
 
 import { Input } from "@/components/ui/input"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { SectionCard } from "@/components/editor/section-card"
 import type { ExecutiveSummaryPanelProps } from "./types"
-
-const TEXTAREA_CLASSES = "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
 
 export function ExecutiveSummaryPanel({
   invoiceData,
@@ -37,10 +36,9 @@ export function ExecutiveSummaryPanel({
               placeholder="Label"
             />
           </div>
-          <textarea
-            className={TEXTAREA_CLASSES}
+          <RichTextEditor
             value={invoiceData.executiveSummary.objective}
-            onChange={(e) => updateExecutiveSummary({ objective: e.target.value })}
+            onChange={(objective) => updateExecutiveSummary({ objective })}
             placeholder="Describe the client's problem or need..."
           />
         </div>
@@ -55,10 +53,9 @@ export function ExecutiveSummaryPanel({
               placeholder="Label"
             />
           </div>
-          <textarea
-            className={TEXTAREA_CLASSES}
+          <RichTextEditor
             value={invoiceData.executiveSummary.solution}
-            onChange={(e) => updateExecutiveSummary({ solution: e.target.value })}
+            onChange={(solution) => updateExecutiveSummary({ solution })}
             placeholder="High-level overview of your solution..."
           />
         </div>
