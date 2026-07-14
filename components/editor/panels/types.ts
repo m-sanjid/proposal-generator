@@ -24,11 +24,15 @@ export interface BaseSectionProps {
   isSectionEmpty: (sectionId: SectionKey) => boolean
   toggleSection: (sectionId: SectionKey, enabled: boolean) => void
   updateSectionLabel: (sectionId: SectionKey, label: string) => void
+  expandedSection: SectionKey | null
+  onExpandedSectionChange: (sectionId: SectionKey | null) => void
 }
 
 export interface DetailsPanelProps {
   invoiceData: InvoiceData
-  updateDocumentInfo: (info: Partial<Pick<InvoiceData, "documentTitle" | "documentNumber" | "issueDate" | "dueDate">>) => void
+  updateDocumentInfo: (
+    info: Partial<Pick<InvoiceData, "documentTitle" | "documentNumber" | "issueDate" | "dueDate" | "currency">>,
+  ) => void
   updateSender: (sender: Partial<Sender>) => void
   updateRecipient: (recipient: Partial<Recipient>) => void
 }

@@ -10,6 +10,7 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import type { InvoiceData } from "@/types";
+import { formatCurrency } from "@/lib/currency";
 import { RichTextPdf } from "@/lib/html-to-pdf";
 
 // Register fonts (using Helvetica as default, which is built-in)
@@ -318,14 +319,6 @@ const formatDate = (dateStr: string): string => {
   });
 };
 
-// Helper function to format currency
-const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "INR",
-  }).format(amount);
-};
-
 export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
   const styles = createStyles(data.branding.themeColor || "#2563eb");
   const isSectionEnabled = (sectionId: string): boolean => {
@@ -524,10 +517,10 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
                     {item.quantity}
                   </Text>
                   <Text style={[styles.tableCell, styles.colRate]}>
-                    {formatCurrency(item.rate)}
+                    {formatCurrency(item.rate, data.currency)}
                   </Text>
                   <Text style={[styles.tableCell, styles.colAmount]}>
-                    {formatCurrency(item.quantity * item.rate)}
+                    {formatCurrency(item.quantity * item.rate, data.currency)}
                   </Text>
                 </View>
               ))}
@@ -537,14 +530,14 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
               <View style={styles.totalRow}>
                 <Text style={styles.totalLabel}>Subtotal</Text>
                 <Text style={styles.totalValue}>
-                  {formatCurrency(calculations.subtotal)}
+                  {formatCurrency(calculations.subtotal, data.currency)}
                 </Text>
               </View>
               {data.discountAmount > 0 && (
                 <View style={styles.totalRow}>
                   <Text style={styles.totalLabel}>Discount</Text>
                   <Text style={styles.totalValue}>
-                    -{formatCurrency(data.discountAmount)}
+                    -{formatCurrency(data.discountAmount, data.currency)}
                   </Text>
                 </View>
               )}
@@ -552,14 +545,14 @@ export function ProposalPDF({ data, calculations }: ProposalPDFProps) {
                 <View style={styles.totalRow}>
                   <Text style={styles.totalLabel}>Tax ({data.taxRate}%)</Text>
                   <Text style={styles.totalValue}>
-                    {formatCurrency(calculations.taxAmount)}
+                    {formatCurrency(calculations.taxAmount, data.currency)}
                   </Text>
                 </View>
               )}
               <View style={styles.grandTotalRow}>
                 <Text style={styles.grandTotalLabel}>Grand Total</Text>
                 <Text style={styles.grandTotalValue}>
-                  {formatCurrency(calculations.grandTotal)}
+                  {formatCurrency(calculations.grandTotal, data.currency)}
                 </Text>
               </View>
             </View>

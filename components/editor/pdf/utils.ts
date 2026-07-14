@@ -2,6 +2,8 @@
  * Utility functions for PDF generation
  */
 
+import { DEFAULT_CURRENCY, formatCurrency as formatCurrencyValue } from "@/lib/currency"
+
 /**
  * Formats a date string to a human-readable format
  */
@@ -16,11 +18,8 @@ export const formatDate = (dateStr: string): string => {
 }
 
 /**
- * Formats a number as INR currency
+ * Formats a number as currency
  */
-export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-  }).format(amount)
+export const formatCurrency = (amount: number, currencyCode: string = DEFAULT_CURRENCY): string => {
+  return formatCurrencyValue(amount, currencyCode)
 }

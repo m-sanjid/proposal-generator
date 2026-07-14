@@ -14,6 +14,8 @@ export function AcceptancePanel({
   isSectionEmpty,
   toggleSection,
   updateSectionLabel,
+  expandedSection,
+  onExpandedSectionChange,
   updateAcceptance,
   onClear,
 }: AcceptancePanelProps) {
@@ -28,6 +30,8 @@ export function AcceptancePanel({
       onToggle={(enabled) => toggleSection("acceptance", enabled)}
       onDelete={onClear}
       onTitleChange={(label) => updateSectionLabel("acceptance", label)}
+      expanded={expandedSection === "acceptance"}
+      onExpandedChange={(expanded) => onExpandedSectionChange(expanded ? "acceptance" : null)}
     >
       <div className="grid gap-4">
         <div className="flex items-center justify-between rounded-lg border bg-muted/20 px-3 py-2.5">

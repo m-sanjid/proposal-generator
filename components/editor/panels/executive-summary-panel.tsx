@@ -12,6 +12,8 @@ export function ExecutiveSummaryPanel({
   isSectionEmpty,
   toggleSection,
   updateSectionLabel,
+  expandedSection,
+  onExpandedSectionChange,
   updateExecutiveSummary,
   onClear,
 }: ExecutiveSummaryPanelProps) {
@@ -24,6 +26,8 @@ export function ExecutiveSummaryPanel({
       onToggle={(enabled) => toggleSection("executiveSummary", enabled)}
       onDelete={onClear}
       onTitleChange={(label) => updateSectionLabel("executiveSummary", label)}
+      expanded={expandedSection === "executiveSummary"}
+      onExpandedChange={(expanded) => onExpandedSectionChange(expanded ? "executiveSummary" : null)}
     >
       <div className="grid gap-3">
         {/* Objective */}

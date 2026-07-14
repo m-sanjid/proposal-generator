@@ -14,6 +14,8 @@ export function NotesPanel({
   isSectionEmpty,
   toggleSection,
   updateSectionLabel,
+  expandedSection,
+  onExpandedSectionChange,
   addNote,
   updateNote,
   removeNote,
@@ -30,6 +32,8 @@ export function NotesPanel({
       onToggle={(enabled) => toggleSection("notes", enabled)}
       onDelete={onClear}
       onTitleChange={(label) => updateSectionLabel("notes", label)}
+      expanded={expandedSection === "notes"}
+      onExpandedChange={(expanded) => onExpandedSectionChange(expanded ? "notes" : null)}
     >
       <div className="space-y-3">
         {/* Notes Header */}

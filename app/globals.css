@@ -165,6 +165,8 @@
 
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Enhanced focus states for accessibility */
@@ -316,6 +318,181 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================================
+   PROPOSALFLOW MARKETING SURFACE
+   ============================================================================ */
+
+.proposal-marketing {
+  --proposal-canvas: oklch(0.984 0.01 120);
+  --proposal-surface: oklch(0.993 0.006 120 / 88%);
+  --proposal-surface-strong: oklch(0.975 0.014 120 / 94%);
+  --proposal-ink: oklch(0.24 0.03 165);
+  --proposal-muted: oklch(0.55 0.02 165);
+  --proposal-muted-strong: oklch(0.39 0.022 165);
+  --proposal-line: oklch(0.84 0.015 150 / 90%);
+  --proposal-line-soft: oklch(0.9 0.01 150 / 80%);
+  --proposal-accent: oklch(0.47 0.09 164);
+  --proposal-accent-strong: oklch(0.41 0.09 164);
+  background:
+    radial-gradient(circle at top left, oklch(0.94 0.03 145 / 0.7), transparent 34%),
+    radial-gradient(circle at 88% 12%, oklch(0.95 0.025 110 / 0.55), transparent 26%),
+    linear-gradient(180deg, oklch(0.995 0.004 110), var(--proposal-canvas));
+  color: var(--proposal-ink);
+}
+
+.dark .proposal-marketing {
+  --proposal-canvas: oklch(0.17 0.015 155);
+  --proposal-surface: oklch(0.205 0.013 155 / 86%);
+  --proposal-surface-strong: oklch(0.24 0.016 155 / 92%);
+  --proposal-ink: oklch(0.95 0.01 120);
+  --proposal-muted: oklch(0.72 0.018 150);
+  --proposal-muted-strong: oklch(0.82 0.015 150);
+  --proposal-line: oklch(0.36 0.014 155 / 95%);
+  --proposal-line-soft: oklch(0.3 0.012 155 / 85%);
+  --proposal-accent: oklch(0.74 0.11 160);
+  --proposal-accent-strong: oklch(0.68 0.11 160);
+  background:
+    radial-gradient(circle at top left, oklch(0.29 0.05 155 / 0.32), transparent 34%),
+    radial-gradient(circle at 88% 12%, oklch(0.26 0.04 110 / 0.26), transparent 24%),
+    linear-gradient(180deg, oklch(0.145 0.015 155), var(--proposal-canvas));
+}
+
+.proposal-panel {
+  border: 1px solid var(--proposal-line);
+  background: var(--proposal-surface);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--proposal-ink) 5%, transparent),
+    0 0 0 6px color-mix(in srgb, var(--proposal-surface-strong) 55%, transparent);
+}
+
+.proposal-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--proposal-ink) 12%, transparent);
+}
+
+.proposal-rise {
+  animation: proposal-rise 560ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+.proposal-rise-delay {
+  animation-delay: 120ms;
+}
+
+.proposal-trace {
+  position: relative;
+  overflow: hidden;
+}
+
+.proposal-trace::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--proposal-accent) 20%, transparent) 20%,
+      color-mix(in srgb, var(--proposal-accent) 72%, transparent) 50%,
+      color-mix(in srgb, var(--proposal-accent) 20%, transparent) 80%,
+      transparent 100%);
+  background-size: 220% 100%;
+  animation: proposal-trace 7s linear infinite;
+}
+
+@keyframes proposal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes proposal-trace {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -40% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proposal-rise,
+  .proposal-rise-delay,
+  .proposal-trace::after {
+    animation: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ============================================================================
+   EDITOR WORKSPACE SURFACES
+   ============================================================================ */
+
+.editor-app {
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 30%),
+    radial-gradient(circle at 85% 12%, color-mix(in srgb, var(--color-chart-2) 12%, transparent), transparent 24%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-background) 92%, white), color-mix(in srgb, var(--color-muted) 36%, var(--color-background)));
+}
+
+.dark .editor-app {
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--color-primary) 16%, transparent), transparent 30%),
+    radial-gradient(circle at 85% 12%, color-mix(in srgb, var(--color-chart-2) 18%, transparent), transparent 24%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-background) 94%, black), color-mix(in srgb, var(--color-muted) 40%, var(--color-background)));
+}
+
+.editor-chrome {
+  background: color-mix(in srgb, var(--color-background) 80%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-foreground) 6%, transparent);
+}
+
+.editor-panel {
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, white 8%);
+  background: color-mix(in srgb, var(--color-card) 90%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 65%, transparent) inset,
+    0 20px 50px color-mix(in srgb, var(--color-foreground) 8%, transparent),
+    0 2px 10px color-mix(in srgb, var(--color-foreground) 4%, transparent);
+}
+
+.dark .editor-panel {
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 10%, transparent) inset,
+    0 20px 50px color-mix(in srgb, black 40%, transparent),
+    0 2px 10px color-mix(in srgb, black 22%, transparent);
+}
+
+.editor-preview-shell {
+  scrollbar-gutter: stable both-edges;
+}
+
+.editor-preview-backdrop {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-muted) 28%, transparent), transparent),
+    color-mix(in srgb, var(--color-background) 70%, transparent);
+}
+
+.state-slot {
+  display: grid;
+}
+
+.state-slot>* {
+  grid-area: 1 / 1;
 }
 
 .glass-dark {

@@ -215,10 +215,10 @@ export function FinancialBreakdownSection({
             </Text>
             <Text style={[styles.tableCell, styles.colQty]}>{item.quantity}</Text>
             <Text style={[styles.tableCell, styles.colRate]}>
-              {formatCurrency(item.rate)}
+              {formatCurrency(item.rate, data.currency)}
             </Text>
             <Text style={[styles.tableCell, styles.colAmount]}>
-              {formatCurrency(item.quantity * item.rate)}
+              {formatCurrency(item.quantity * item.rate, data.currency)}
             </Text>
           </View>
         ))}
@@ -229,7 +229,7 @@ export function FinancialBreakdownSection({
         <View style={styles.totalRow}>
           <Text style={styles.totalLabel}>Subtotal</Text>
           <Text style={styles.totalValue}>
-            {formatCurrency(calculations.subtotal)}
+            {formatCurrency(calculations.subtotal, data.currency)}
           </Text>
         </View>
 
@@ -237,7 +237,7 @@ export function FinancialBreakdownSection({
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Discount</Text>
             <Text style={styles.totalValue}>
-              -{formatCurrency(data.discountAmount)}
+              -{formatCurrency(data.discountAmount, data.currency)}
             </Text>
           </View>
         )}
@@ -246,7 +246,7 @@ export function FinancialBreakdownSection({
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Tax ({data.taxRate}%)</Text>
             <Text style={styles.totalValue}>
-              {formatCurrency(calculations.taxAmount)}
+              {formatCurrency(calculations.taxAmount, data.currency)}
             </Text>
           </View>
         )}
@@ -254,7 +254,7 @@ export function FinancialBreakdownSection({
         <View style={styles.grandTotalRow}>
           <Text style={styles.grandTotalLabel}>Grand Total</Text>
           <Text style={styles.grandTotalValue}>
-            {formatCurrency(calculations.grandTotal)}
+            {formatCurrency(calculations.grandTotal, data.currency)}
           </Text>
         </View>
       </View>

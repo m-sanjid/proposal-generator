@@ -104,6 +104,7 @@ export interface InvoiceData {
   documentNumber: string
   issueDate: string
   dueDate: string
+  currency: string
   sender: Sender
   recipient: Recipient
   items: Item[]
@@ -126,7 +127,7 @@ export interface InvoiceContextType {
   updateSender: (sender: Partial<Sender>) => void
   updateRecipient: (recipient: Partial<Recipient>) => void
   updateDocumentInfo: (
-    info: Partial<Pick<InvoiceData, "documentTitle" | "documentNumber" | "issueDate" | "dueDate" | "terms">>,
+    info: Partial<Pick<InvoiceData, "documentTitle" | "documentNumber" | "issueDate" | "dueDate" | "currency" | "terms">>,
   ) => void
   updateBranding: (branding: Partial<BrandingSettings>) => void
   addItem: () => void

@@ -1,42 +1,44 @@
 "use client"
 
-import React, { useState, useRef, useCallback } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { DownloadMenu } from "@/components/editor/download-menu"
-import { useInvoice } from "@/context/invoice-context"
+import React, { useCallback, useMemo, useRef, useState } from "react"
 
-// Import modular panel components
+import { DownloadMenu } from "@/components/editor/download-menu"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useInvoice } from "@/context/invoice-context"
+import { formatCurrency } from "@/lib/currency"
+import { cn } from "@/lib/utils"
+import type { SectionKey } from "@/types"
+
 import {
+  AcceptancePanel,
+  BrandingPanel,
   DetailsPanel,
   ExecutiveSummaryPanel,
-  ScopeOfWorkPanel,
-  TimelinePanel,
   FinancialBreakdownPanel,
-  TermsPanel,
   NotesPanel,
-  AcceptancePanel,
+  ScopeOfWorkPanel,
   SettingsPanel,
-  BrandingPanel,
+  TermsPanel,
+  TimelinePanel,
 } from "./panels"
-import { cn } from "@/lib/utils"
 
-// Tab configuration for scalability
 const TABS = [
-  { value: "details", label: "Details" },
-  { value: "sections", label: "Sections" },
-  { value: "settings", label: "Settings" },
-  { value: "branding", label: "Brand" },
+  { value: "details", label: "Details", hint: "Parties & dates" },
+  { value: "sections", label: "Sections", hint: "Content blocks" },
+  { value: "settings", label: "Settings", hint: "Visibility & math" },
+  { value: "branding", label: "Brand", hint: "Logo & color" },
 ] as const
 
 type TabValue = (typeof TABS)[number]["value"]
 
 export function EditorSidebar({ className }: { className?: string }) {
   const [activeTab, setActiveTab] = useState<TabValue>("details")
+  const [expandedSection, setExpandedSection] = useState<SectionKey | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Get all context values
   const {
     invoiceData,
+    calculations,
     updateSender,
     updateRecipient,
     updateDocumentInfo,
@@ -73,22 +75,20 @@ export function EditorSidebar({ className }: { className?: string }) {
     getSectionLabel,
   } = useInvoice()
 
-  // Logo upload handler
   const handleLogoUpload = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      if (file) {
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          updateBranding({ logo: reader.result as string })
-        }
-        reader.readAsDataURL(file)
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0]
+      if (!file) return
+
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        updateBranding({ logo: reader.result as string })
       }
+      reader.readAsDataURL(file)
     },
     [updateBranding]
   )
 
-  // Section clear handlers - memoized for performance
   const clearHandlers = {
     executiveSummary: useCallback(() => {
       updateExecutiveSummary({ objective: "", solution: "" })
@@ -121,35 +121,79 @@ export function EditorSidebar({ className }: { className?: string }) {
     }, [updateAcceptance, toggleSection]),
   }
 
-  // Shared section props for DRY code
   const baseSectionProps = {
     getSectionLabel,
     isSectionEnabled,
     isSectionEmpty,
     toggleSection,
     updateSectionLabel,
+    expandedSection,
+    onExpandedSectionChange: setExpandedSection,
   }
 
+  const tabMeta = useMemo(
+    () =>
+      ({
+        details: {
+          title: "Proposal details",
+          description: "Document identity, sender, client, and the fields needed before writing the body.",
+        },
+        sections: {
+          title: "Document sections",
+          description: "Manage the actual proposal content, pricing, milestones, and signature areas.",
+        },
+        settings: {
+          title: "Calculation settings",
+          description: "Fine-tune tax, discount, and visibility without changing content structure.",
+        },
+        branding: {
+          title: "Brand styling",
+          description: "Set logo and accent so the exported proposal looks finished, not generic.",
+        },
+      }) satisfies Record<TabValue, { title: string; description: string }>,
+    []
+  )
+
+  const totalLabel = formatCurrency(calculations.grandTotal, invoiceData.currency)
+
   return (
-    <div className={cn("flex h-full w-full max-w-3xl flex-col border bg-card shadow-xs no-print scrollbar-hide", className)}>
-      <Tabs
-        value={activeTab}
-        onValueChange={(v) => setActiveTab(v as TabValue)}
-        className="flex flex-1 flex-col overflow-hidden"
-      >
-        <div className="border-b px-4 pt-4">
-          <TabsList variant="line" className="w-full justify-start">
-            {TABS.map((tab) => (
-              <TabsTrigger key={tab.value} value={tab.value} className="text-xs">
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+    <div className={cn("editor-panel flex h-full w-full flex-col overflow-hidden rounded-[24px]", className)}>
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabValue)} className="flex h-full flex-col gap-0">
+        <div className="border-b border-white/35 px-3.5 pb-3.5 pt-3.5 sm:px-4 sm:pb-4">
+          <div className="grid gap-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-base font-semibold tracking-[-0.02em] text-foreground">Editor</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Compact controls for shaping the document.</p>
+              </div>
+              <div className="rounded-2xl border border-white/35 bg-background/70 px-3 py-2 shadow-sm">
+                <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Total</div>
+                <div className="mt-0.5 text-sm font-semibold text-foreground tabular-nums">{totalLabel}</div>
+              </div>
+            </div>
+
+            <TabsList className="grid h-auto w-full grid-cols-2 gap-1.5 rounded-[16px] bg-muted/60 p-1.5 shadow-inner sm:grid-cols-4">
+              {TABS.map((tab) => (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="min-h-9 rounded-2xl px-2.5 py-2 text-left data-[state=active]:shadow-sm"
+                  title={tab.hint}
+                >
+                  <span className="text-[13px] font-semibold leading-none">{tab.label}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto scrollbar-hide p-4">
-          {/* Details Tab */}
-          <TabsContent value="details" className="m-0 space-y-6">
+        <div className="flex-1 overflow-y-auto px-3.5 py-3.5 sm:px-4 sm:py-4">
+          <div className="mb-4 rounded-[18px] border border-white/35 bg-background/70 p-3.5 shadow-sm">
+            <p className="text-sm font-medium text-foreground">{tabMeta[activeTab].title}</p>
+            <p className="mt-1.5 text-pretty text-sm leading-6 text-muted-foreground">{tabMeta[activeTab].description}</p>
+          </div>
+
+          <TabsContent value="details" className="m-0 space-y-4">
             <DetailsPanel
               invoiceData={invoiceData}
               updateDocumentInfo={updateDocumentInfo}
@@ -158,13 +202,7 @@ export function EditorSidebar({ className }: { className?: string }) {
             />
           </TabsContent>
 
-          {/* Sections Tab */}
-          <TabsContent value="sections" className="m-0 space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Toggle sections on/off, edit titles, and manage content.
-              Click the pencil icon to rename any section.
-            </p>
-
+          <TabsContent value="sections" className="m-0 space-y-3.5">
             <ExecutiveSummaryPanel
               invoiceData={invoiceData}
               updateExecutiveSummary={updateExecutiveSummary}
@@ -231,8 +269,7 @@ export function EditorSidebar({ className }: { className?: string }) {
             />
           </TabsContent>
 
-          {/* Settings Tab */}
-          <TabsContent value="settings" className="m-0 space-y-6">
+          <TabsContent value="settings" className="m-0 space-y-4">
             <SettingsPanel
               invoiceData={invoiceData}
               updateTaxRate={updateTaxRate}
@@ -241,8 +278,7 @@ export function EditorSidebar({ className }: { className?: string }) {
             />
           </TabsContent>
 
-          {/* Branding Tab */}
-          <TabsContent value="branding" className="m-0 space-y-6">
+          <TabsContent value="branding" className="m-0 space-y-4">
             <BrandingPanel
               invoiceData={invoiceData}
               updateBranding={updateBranding}
@@ -253,8 +289,13 @@ export function EditorSidebar({ className }: { className?: string }) {
         </div>
       </Tabs>
 
-      {/* Footer with Download */}
-      <footer className="border-t bg-muted/20 p-4">
+      <footer className="border-t border-white/35 bg-background/70 px-3.5 py-3 sm:px-4">
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium text-foreground">Export</p>
+            <p className="text-sm text-muted-foreground">Open the preview modal or download the current draft.</p>
+          </div>
+        </div>
         <DownloadMenu />
       </footer>
     </div>

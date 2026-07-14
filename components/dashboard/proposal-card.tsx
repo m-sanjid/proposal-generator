@@ -9,6 +9,7 @@ import {
   FileText,
 } from "lucide-react"
 import { useState, useRef } from "react"
+import { formatCurrency } from "@/lib/currency"
 import { SavedProposal } from "@/lib/storage-utils"
 
 interface ProposalCardProps {
@@ -93,7 +94,7 @@ export function ProposalCard({
           </span>
 
           <span className="rounded-lg bg-neutral-900 px-3 py-1 text-sm font-medium text-white">
-            ₹{total.toLocaleString("en-IN")}
+            {formatCurrency(total, proposal.data.currency)}
           </span>
         </div>
       </div>

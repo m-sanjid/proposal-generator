@@ -21,8 +21,9 @@ import type {
   SectionKey,
   SectionConfig,
 } from "@/types"
+import { DEFAULT_CURRENCY } from "@/lib/currency"
 
-const defaultSections: SectionConfig[] = [
+const createDefaultSections = (): SectionConfig[] => [
   { id: "executiveSummary", label: "Executive Summary", enabled: true },
   { id: "scopeOfWork", label: "Scope of Work", enabled: true },
   { id: "timeline", label: "Timeline", enabled: true },
@@ -32,11 +33,12 @@ const defaultSections: SectionConfig[] = [
   { id: "acceptance", label: "Acceptance", enabled: true },
 ]
 
-const defaultInvoiceData: InvoiceData = {
+const createDefaultInvoiceData = (): InvoiceData => ({
   documentTitle: "PROPOSAL",
   documentNumber: "PRO-001",
   issueDate: new Date().toISOString().split("T")[0],
   dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+  currency: DEFAULT_CURRENCY,
   sender: {
     name: "Your Company Name",
     email: "hello@company.com",
@@ -60,7 +62,7 @@ const defaultInvoiceData: InvoiceData = {
   discountAmount: 0,
   notes: [{ id: "1", text: "Thank you for considering our services. We look forward to working with you!" }],
   terms: "Payment is due within 30 days of invoice date. Late payments may incur a 2% monthly fee.",
-  logo: "", // Root level logo for proposal thumbnails
+  logo: "",
   branding: {
     logo: null,
     themeColor: "#2563eb",
@@ -125,13 +127,52 @@ const defaultInvoiceData: InvoiceData = {
     signatureDate: "",
     showSignatureLine: true,
   },
-  sections: defaultSections,
+  sections: createDefaultSections(),
+})
+
+const mergeInvoiceData = (data: Partial<InvoiceData>): InvoiceData => {
+  const defaults = createDefaultInvoiceData()
+
+  return {
+    ...defaults,
+    ...data,
+    currency: data.currency ?? defaults.currency,
+    sender: { ...defaults.sender, ...data.sender },
+    recipient: { ...defaults.recipient, ...data.recipient },
+    items: data.items ?? defaults.items,
+    notes: data.notes ?? defaults.notes,
+    branding: {
+      ...defaults.branding,
+      ...data.branding,
+      logo: data.branding?.logo ?? data.logo ?? defaults.branding.logo,
+    },
+    executiveSummary: { ...defaults.executiveSummary, ...data.executiveSummary },
+    scopeOfWork: {
+      ...defaults.scopeOfWork,
+      ...data.scopeOfWork,
+      phases: data.scopeOfWork?.phases ?? defaults.scopeOfWork.phases,
+      exclusions: data.scopeOfWork?.exclusions ?? defaults.scopeOfWork.exclusions,
+    },
+    timeline: {
+      ...defaults.timeline,
+      ...data.timeline,
+      milestones: data.timeline?.milestones ?? defaults.timeline.milestones,
+    },
+    termsConditions: {
+      ...defaults.termsConditions,
+      ...data.termsConditions,
+      terms: data.termsConditions?.terms ?? defaults.termsConditions.terms,
+    },
+    acceptance: { ...defaults.acceptance, ...data.acceptance },
+    logo: data.logo ?? data.branding?.logo ?? defaults.logo,
+    sections: data.sections ?? defaults.sections,
+  }
 }
 
 const InvoiceContext = createContext<InvoiceContextType | undefined>(undefined)
 
 export function InvoiceProvider({ children }: { children: ReactNode }) {
-  const [invoiceData, setInvoiceData] = useState<InvoiceData>(defaultInvoiceData)
+  const [invoiceData, setInvoiceData] = useState<InvoiceData>(() => createDefaultInvoiceData())
 
   const updateSender = (sender: Partial<Sender>) => {
     setInvoiceData((prev) => ({
@@ -148,7 +189,7 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
   }
 
   const updateDocumentInfo = (
-    info: Partial<Pick<InvoiceData, "documentTitle" | "documentNumber" | "issueDate" | "dueDate" | "terms">>,
+    info: Partial<Pick<InvoiceData, "documentTitle" | "documentNumber" | "issueDate" | "dueDate" | "currency" | "terms">>,
   ) => {
     setInvoiceData((prev) => ({ ...prev, ...info }))
   }
@@ -456,11 +497,11 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
   }, [invoiceData.items, invoiceData.taxRate, invoiceData.discountAmount])
 
   const loadProposal = useCallback((data: InvoiceData) => {
-    setInvoiceData(data)
+    setInvoiceData(mergeInvoiceData(data))
   }, [])
 
   const resetToDefault = useCallback(() => {
-    setInvoiceData(defaultInvoiceData)
+    setInvoiceData(createDefaultInvoiceData())
   }, [])
 
   return (

@@ -16,6 +16,8 @@ export function ScopeOfWorkPanel({
   isSectionEmpty,
   toggleSection,
   updateSectionLabel,
+  expandedSection,
+  onExpandedSectionChange,
   addPhase,
   updatePhase,
   removePhase,
@@ -35,6 +37,8 @@ export function ScopeOfWorkPanel({
       onToggle={(enabled) => toggleSection("scopeOfWork", enabled)}
       onDelete={onClear}
       onTitleChange={(label) => updateSectionLabel("scopeOfWork", label)}
+      expanded={expandedSection === "scopeOfWork"}
+      onExpandedChange={(expanded) => onExpandedSectionChange(expanded ? "scopeOfWork" : null)}
     >
       <div className="space-y-4">
         {/* Phases / Deliverables */}

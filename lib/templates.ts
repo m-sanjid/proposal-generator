@@ -10,13 +10,18 @@ export interface Template {
 }
 
 // Base template data with common defaults
-const baseTemplateData: Omit<InvoiceData, "documentTitle" | "documentNumber" | "sender" | "recipient" | "items" | "executiveSummary" | "scopeOfWork" | "timeline" | "termsConditions"> = {
+const baseTemplateData: Omit<
+  InvoiceData,
+  "documentTitle" | "documentNumber" | "sender" | "recipient" | "items" | "executiveSummary" | "scopeOfWork" | "timeline" | "termsConditions"
+> = {
   issueDate: new Date().toISOString().split("T")[0],
   dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+  currency: "USD",
   taxRate: 0,
   discountAmount: 0,
   notes: [],
   terms: "Payment is due within 30 days of invoice date.",
+  logo: "",
   branding: {
     logo: null,
     themeColor: "#2563eb",
